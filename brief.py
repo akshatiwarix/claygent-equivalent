@@ -67,6 +67,8 @@ def run_batch(client, domains: list[str], persona: str | None, offer: str | None
             top, status = "", "ok"
             try:
                 top = build_brief(client, domain, persona, offer)
+                if not top:
+                    status = "no_triggers"  # brief written, but nothing verified: don't send as-is
                 ok += 1
             except Exception as e:  # skip this domain, keep the batch going
                 status = f"error: {type(e).__name__}: {str(e)[:150]}".replace("\n", " ")
