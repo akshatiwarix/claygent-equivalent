@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+from contextvars import ContextVar
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -18,6 +19,8 @@ USAGE_LOG = Path("briefs/usage.log")
 
 # Running totals per domain, filled by log_usage so failed domains still report what they spent.
 TALLY: dict[str, dict] = {}
+# Set per run by pipeline.run_brief so concurrent runs of the same domain don't share a tally.
+RUN_KEY: ContextVar[str | None] = ContextVar("run_key", default=None)
 
 WEB_SEARCH_TOOL = {
     "type": "openrouter:web_search",
@@ -42,15 +45,18 @@ def get_model() -> str:
 
 def log_usage(step: str, domain: str, usage: dict) -> None:
     """Print the usage object to stderr and append it to briefs/usage.log."""
-    t = TALLY.setdefault(domain, {"tokens": 0, "cost": 0.0, "searches": 0})
+    t = TALLY.setdefault(RUN_KEY.get() or domain, {"tokens": 0, "cost": 0.0, "searches": 0})
     t["tokens"] += usage.get("total_tokens") or 0
     t["cost"] += usage.get("cost") or 0
     t["searches"] += search_count(usage)
     line = json.dumps({"domain": domain, "step": step, "usage": usage}, default=str)
     print(f"[usage] {line}", file=sys.stderr)
-    USAGE_LOG.parent.mkdir(exist_ok=True)
-    with USAGE_LOG.open("a") as f:
-        f.write(line + "\n")
+    try:  # best effort: the filesystem is read-only on Vercel
+        USAGE_LOG.parent.mkdir(exist_ok=True)
+        with USAGE_LOG.open("a") as f:
+            f.write(line + "\n")
+    except OSError:
+        pass
 
 
 def _usage_dict(resp) -> dict:

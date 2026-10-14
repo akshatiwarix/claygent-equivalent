@@ -5,39 +5,32 @@ Batch from CSV: python brief.py --csv accounts.csv   (column: domain)
 """
 import argparse
 import csv
+import json
 import sys
-import time
-from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
 import llm
-from checks import apply_checks
+from models import AccountBrief
+from pipeline import run_brief
 from render import render_markdown
-from repair import repair_brief
 
 SUMMARY_FIELDS = ["domain", "status", "top_trigger", "tokens", "searches", "cost_usd", "seconds"]
 
 
-def build_brief(client, domain: str, persona: str | None, offer: str | None) -> str:
-    """Run both steps for one domain, write briefs/<domain>.md, return the top trigger text.
+def build_brief(client, domain: str, persona: str | None, offer: str | None) -> dict:
+    """Run the pipeline for one domain, write briefs/<domain>.md and .json, return the result.
 
     Raises on any failure; the caller decides whether that stops the run.
     """
-    notes, cited, _ = llm.research_call(client, domain, persona, offer)
-    if not notes.strip():
-        raise RuntimeError("research call returned no notes")
-    brief, _ = llm.synthesis_call(client, domain, notes, persona, offer)
-    brief = apply_checks(brief, cited, domain)
-    brief = repair_brief(client, brief, domain)  # auto-fix dead links and generic openers
-    out = Path("briefs") / f"{domain}.md"
-    out.parent.mkdir(exist_ok=True)
-    out.write_text(render_markdown(brief, domain, date.today().isoformat()))
-    print(f"wrote {out}", file=sys.stderr)
-    if not brief.triggers:
-        return ""
-    t = brief.triggers[0]  # triggers are sorted best source first
-    return f"{t.type.replace('_', ' ')}: {t.summary} ({t.date})"
+    result = run_brief(client, domain, persona, offer)
+    brief = AccountBrief.model_validate(result["brief"])
+    out = Path("briefs")
+    out.mkdir(exist_ok=True)
+    (out / f"{domain}.md").write_text(render_markdown(brief, domain, result["generated"]))
+    (out / f"{domain}.json").write_text(json.dumps(result, indent=2))
+    print(f"wrote {out / domain}.md", file=sys.stderr)
+    return result
 
 
 def clean_domain(raw: str) -> str:
@@ -62,30 +55,35 @@ def run_batch(client, domains: list[str], persona: str | None, offer: str | None
               summary_path: Path) -> None:
     summary_path.parent.mkdir(exist_ok=True)
     ok = failed = 0
+    total_cost = 0.0
     with summary_path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=SUMMARY_FIELDS)
         writer.writeheader()
         for i, domain in enumerate(domains, 1):
             print(f"[{i}/{len(domains)}] {domain}", file=sys.stderr)
-            top, status, started = "", "ok", time.monotonic()
+            top, status = "", "ok"
+            stats = {"tokens": 0, "searches": 0, "cost_usd": 0.0, "seconds": 0}
             try:
-                top = build_brief(client, domain, persona, offer)
-                if not top:
+                result = build_brief(client, domain, persona, offer)
+                stats = result["stats"]
+                triggers = result["brief"]["triggers"]
+                if triggers:  # sorted best source first
+                    t = triggers[0]
+                    top = f"{t['type'].replace('_', ' ')}: {t['summary']} ({t['date']})"
+                else:
                     status = "no_triggers"  # brief written, but nothing verified: don't send as-is
                 ok += 1
             except Exception as e:  # skip this domain, keep the batch going
                 status = f"error: {type(e).__name__}: {str(e)[:150]}".replace("\n", " ")
+                stats = getattr(e, "run_stats", stats)  # failed domains still show what they spent
                 print(f"  skipped {domain}: {status}", file=sys.stderr)
                 failed += 1
-            # Tally is filled by every API call, so failed domains still show what they spent.
-            t = llm.TALLY.get(domain, {"tokens": 0, "searches": 0, "cost": 0.0})
+            total_cost += stats["cost_usd"]
             writer.writerow({"domain": domain, "status": status, "top_trigger": top,
-                             "tokens": t["tokens"], "searches": t["searches"],
-                             "cost_usd": round(t["cost"], 4),
-                             "seconds": round(time.monotonic() - started)})
+                             "tokens": stats["tokens"], "searches": stats["searches"],
+                             "cost_usd": stats["cost_usd"], "seconds": stats["seconds"]})
             f.flush()  # keep progress if the run is killed
-    total = sum(t["cost"] for t in llm.TALLY.values())
-    print(f"done: {ok} ok, {failed} failed, total cost ${total:.4f}. Summary: {summary_path}",
+    print(f"done: {ok} ok, {failed} failed, total cost ${total_cost:.4f}. Summary: {summary_path}",
           file=sys.stderr)
 
 
