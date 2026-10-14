@@ -1,0 +1,665 @@
+{
+  "airtable.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/airtable-joins-bending-spoons"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://community.airtable.com/announcements-6/new-a-major-upgrade-to-omni-48793"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/back-to-bases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/back-to-bases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/back-to-bases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/back-to-bases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.airtable.com/newsroom/back-to-bases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://www.linkedin.com/posts/howieliu_today-airtable-officially-came-part-of-bending-activity-7501703583957045248--fep"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://techcrunch.com/2026/08/04/bending-spoons-to-buy-airtable-for-1-28b/"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "After October's layoffs, who now owns Airtable's sales pipeline targets, and how is outbound capacity being rebuilt?",
+        "flags": []
+      },
+      {
+        "opener": "Bending Spoons says it will invest heavily in go-to-market after closing. Where would AI outbound fit into that plan for your team?",
+        "flags": []
+      },
+      {
+        "opener": "With enterprise agent permissions coming, how do you govern AI-run outbound workflows before reps trust them?",
+        "flags": []
+      }
+    ]
+  },
+  "attio.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://attio.com/changelog/2026/workflow-history-and-agent-log"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://attio.com/changelog/2026/changelog-september-23-2026"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://attio.com/changelog/2026/a-more-intuitive-ask-attio"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": false,
+        "date_on_page": false,
+        "url": "https://attio.com/changelog/2026"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://spyingbee.com/updates/attio/2026-08"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://spyingbee.com/updates/attio/2026-08"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://spyingbee.com/updates/attio/2026-08"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://spyingbee.com/updates/attio/2026-08"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Saw Attio's August Workflows update added Hunter email verification. Is your SDR list hygiene still manual before sends?",
+        "flags": []
+      },
+      {
+        "opener": "Attio's CEO said they'd partner for outbound rather than build an agent. Are you evaluating outside AI outbound tooling for your SDR team?",
+        "flags": []
+      },
+      {
+        "opener": "Attio's Ask Attio now suggests next actions like lead-scoring agents. How is your team tracking whether AI-suggested follow-ups actually convert?",
+        "flags": []
+      }
+    ]
+  },
+  "clay.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/blog/series-d"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/changelog/clay-ads"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/changelog/product-roundup-week-of-august-24-2026"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/changelog/product-roundup-week-of-august-31-2026"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/changelog/clay-sequencer-2-0"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/changelog/clay-agent-plugin-cli-api"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.clay.com/blog/series-d"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.withcrew.blog/p/how-clay-built-the-gtm-team-behind-a-5b-valuation-w-becca-lindquist-head-of-sales-clay"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.withcrew.blog/p/how-clay-built-the-gtm-team-behind-a-5b-valuation-w-becca-lindquist-head-of-sales-clay"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://thenextweb.com/news/clay-raises-115m-series-d-7-1bn-valuation-wellington"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Clay's Head of Sales is hiring 60 people toward 100+ reps. How are you getting new reps to pipeline faster?",
+        "flags": []
+      },
+      {
+        "opener": "With Sequencer 2.0 scaling to 500K leads, Clay is moving into outbound. Where does your team's outbound still beat their native sequencing?",
+        "flags": []
+      },
+      {
+        "opener": "Clay's $115M Series D followed 4x revenue growth in 2025. How is your outbound scaling without adding SDR headcount?",
+        "flags": []
+      }
+    ]
+  },
+  "figma.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/newsroom/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/newsroom/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/blog/how-we-built-generative-plugins-and-shaders/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/newsroom/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/release-notes/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/newsroom/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/release-notes/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.figma.com/release-notes/"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://www.linkedin.com/posts/kristopherrasmussen_after-a-decade-building-out-figmas-tech-activity-7491301712561897472-71wU"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://releases.fru.dev/releases/figma-2026-08-24-enterprise-managed-authorization-for-mcp-is-now-generally-available"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Berlin, Paris and Tokyo AE hiring means new reps ramping fast. Could AI outbound shorten that ramp for your team?",
+        "flags": []
+      },
+      {
+        "opener": "Figma agent moved to AI credits on Oct 6. Are you tracking usage-based AI spend per rep, or is it manual today?",
+        "flags": []
+      },
+      {
+        "opener": "Japan data residency for enterprise customers launched September 11. How does your team map security reviewers into enterprise outbound sequences?",
+        "flags": []
+      }
+    ]
+  },
+  "gong.io": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.gong.io/press/gong-mission-callisto-sales-enrichment-layer"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.gong.io/press/new-revenue-ai-innovation-celebrate-26"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": false,
+        "date_on_page": false,
+        "url": "https://job-boards.greenhouse.io/gongio/jobs/4697977006"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://job-boards.greenhouse.io/gongio/jobs/4715190006"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://mitchellake.com/intelligence/wire/gong-product-launch-2026-08-04"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Gong's GTM AI Engineer posting suggests you're building AI sales tooling in-house. Where would a buy-versus-build comparison help your team?",
+        "flags": []
+      },
+      {
+        "opener": "Gong's Enrich now sells contact data, so your outbound data workflow probably touches it. Are you comparing enrichment sources before your next pipeline push?",
+        "flags": []
+      },
+      {
+        "opener": "Gong's Agent Builder runs agents on triggers. Where would an AI outbound tool fit alongside those agents for your team?",
+        "flags": []
+      }
+    ]
+  },
+  "linear.app": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/now/sharing-growth-with-the-people-building-linear"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/changelog/2026-08-13-team-initiatives"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/changelog"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/changelog/2026-09-14-loops-for-product-management"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/changelog"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://linear.app/changelog"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Hiring across GTM as you expand into EMEA and APAC? Our AI outbound tooling gets new AEs to regional pipeline faster.",
+        "flags": []
+      },
+      {
+        "opener": "Linear's new AI credit explorer gives admins spend caps. Our AI outbound tooling offers the same spend visibility per rep. Send you an example?",
+        "flags": []
+      },
+      {
+        "opener": "Following the $99M tender at $2.5B, your EMEA push likely needs pipeline fast. Our AI outbound tooling can help. Worth a conversation?",
+        "flags": []
+      }
+    ]
+  },
+  "notion.so": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.notion.com/releases/2026-10-13"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.notion.com/releases/2026-10-13"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.notion.com/blog/meet-max-schoening-notion-cto"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.notion.com/releases/2026-09-15"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.notion.com/releases/2026-09-09"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": false,
+        "date_on_page": false,
+        "url": "https://jobs.ashbyhq.com/notion/ab383335-1dd5-4d6a-971f-439cebf48a9d"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Notion's October synced Salesforce databases now feed its agents directly. How are your reps keeping CRM data fresh before outbound sends?",
+        "flags": []
+      },
+      {
+        "opener": "Notion's new MCP agent connections let agents read and update your workspace. Who owns outbound quality when AI agents touch your pipeline?",
+        "flags": []
+      },
+      {
+        "opener": "Notion now lets admins pick which AI models power its agents. How do you control which AI tools touch prospect data in outbound?",
+        "flags": []
+      }
+    ]
+  },
+  "ramp.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://ramp.com/product-releases"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": false,
+        "date_on_page": true,
+        "url": "https://www.prnewswire.com/news-releases/ramp-launches-ramp-accounts-receivable-to-help-businesses-get-paid-faster-302886166.html"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://www.applinity.com/companies/ramp"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://careers.redpoint.com/companies/ramp-2/jobs/92259213-gtm-business-systems-engineer-post-sales"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "With 68 of Ramp's 147 open US roles in Sales, new AI reps need pipeline fast. Our tooling builds finance-buyer lists for them.",
+        "flags": []
+      },
+      {
+        "opener": "Ramp is hiring a Senior Business Systems Engineer to evolve Post Sales systems. Our AI tooling keeps outbound and handoff data in sync.",
+        "flags": []
+      },
+      {
+        "opener": "Ramp's Accounts Receivable launch targets QuickBooks and NetSuite finance teams. Our AI outbound tooling finds those buyers faster.",
+        "flags": []
+      }
+    ]
+  },
+  "retool.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://community.retool.com/t/early-access-introducing-retool-s-centralized-agent-harness/67572"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": false,
+        "date_on_page": false,
+        "url": "https://docs.retool.com/changelog/2026/10/02/new-ai-models-"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://docs.retool.com/changelog/2026/09/17/new-ai-models-"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://docs.retool.com/changelog/upcoming-assist-removal"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://www.linkedin.com/posts/tryretool_introducing-retools-app-gallery-a-brand-activity-7500258989105020928-lOUt"
+      },
+      {
+        "link": "blocked",
+        "detail": "429",
+        "quote_on_page": null,
+        "date_on_page": null,
+        "url": "https://migratemate.co/companies-hiring/retool"
+      },
+      {
+        "link": "blocked",
+        "detail": "429",
+        "quote_on_page": null,
+        "date_on_page": null,
+        "url": "https://www.metaintro.com/company/retool"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Retool's new agent harness runs in Slack, Teams, and Google Chat with admin controls. Is your sales team ready to pitch that governance?",
+        "flags": []
+      },
+      {
+        "opener": "Retool's job postings include a Senior BDR and two Revenue Strategy and Operations manager roles. How are you helping new reps ramp faster?",
+        "flags": []
+      },
+      {
+        "opener": "Retool keeps shipping new AI models while removing Assist from its classic builder. Is your team keeping reps current on fast-moving product changes?",
+        "flags": []
+      }
+    ]
+  },
+  "vercel.com": {
+    "links": [
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://vercel.com/blog/introducing-vercel-connect"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://job-boards.greenhouse.io/vercel/jobs/6199608004"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": false,
+        "url": "https://www.linkedin.com/posts/rauchg_im-excited-to-welcome-two-legends-of-developer-activity-7483642683270463488-lTKR"
+      },
+      {
+        "link": "ok",
+        "detail": "200",
+        "quote_on_page": true,
+        "date_on_page": true,
+        "url": "https://techreport.ngo/engineering/david-totten-joins-vercel-to-lead-global-field-engineering/"
+      }
+    ],
+    "openers": [
+      {
+        "opener": "Saw David Totten now leads field and sales engineering at Vercel. Could outbound keep pace through that reorganization?",
+        "flags": []
+      },
+      {
+        "opener": "With Vercel Connect now GA, enterprise reps have another product to position. Open to a quick look at AI outbound?",
+        "flags": []
+      },
+      {
+        "opener": "Vercel is scaling AEs across regions while hiring agentic engineers. Could AI outbound help new reps ramp faster?",
+        "flags": []
+      }
+    ]
+  }
+}
