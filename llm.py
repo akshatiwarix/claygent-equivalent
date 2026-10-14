@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+from typing import Literal
 from contextvars import ContextVar
 from datetime import date, timedelta
 from pathlib import Path
@@ -164,7 +165,8 @@ def rewrite_openers(client: OpenAI, domain: str, brief: AccountBrief,
 class _Verdict(BaseModel):
     model_config = ConfigDict(extra="forbid")
     index: int
-    supported: bool
+    verdict: Literal["supported", "partial", "unsupported"]
+    trimmed_summary: str
 
 
 class _Verdicts(BaseModel):
@@ -184,12 +186,17 @@ def _strict_call(client: OpenAI, domain: str, step: str, prompt: str, model_cls)
     return model_cls.model_validate_json(resp.choices[0].message.content or "")
 
 
-def check_support(client: OpenAI, domain: str, brief: AccountBrief) -> dict[int, bool]:
-    """Does each trigger's quote actually support its summary? One call for all triggers."""
-    items = "\n".join(f'{i}. Claim: {t.summary}\n   Quote: "{t.evidence_quote}"'
-                      for i, t in enumerate(brief.triggers))
-    out = _strict_call(client, domain, "support", support_prompt(items), _Verdicts)
-    return {v.index: v.supported for v in out.verdicts}
+def check_support(client: OpenAI, domain: str, brief: AccountBrief,
+                  excerpts: dict[str, str]) -> dict[int, tuple[str, str]]:
+    """Does each trigger's source text support its summary? One call for all triggers.
+    Returns {index: (verdict, trimmed_summary)}."""
+    by_url = {u.strip().rstrip("/"): text for u, text in excerpts.items()}
+    parts = []
+    for i, t in enumerate(brief.triggers):
+        text = by_url.get(t.source_url.strip().rstrip("/"), "").strip()[:5000] or "(source text not available)"
+        parts.append(f'{i}. Claim: {t.summary}\n   Quote shown to the rep: "{t.evidence_quote}"\n   SOURCE TEXT:\n{text}')
+    out = _strict_call(client, domain, "support", support_prompt("\n\n".join(parts)), _Verdicts)
+    return {v.index: (v.verdict, v.trimmed_summary.strip()) for v in out.verdicts}
 
 
 class _Replacement(BaseModel):

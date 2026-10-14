@@ -67,9 +67,14 @@ Openers to rewrite, with what was wrong:
 
 
 def support_prompt(items: str) -> str:
-    return f"""For each numbered claim, decide whether the quote directly supports the claim's main fact.
-Answer supported=false if the quote is about a different topic, only loosely related, or does not contain the key fact (a number, name, product, or event) the claim states.
-Be strict: a sales rep will repeat the claim to the prospect.
+    return f"""A sales rep will repeat each claim to a prospect. For each numbered claim, judge it against the SOURCE TEXT the research tool returned for its link. The quote is only the anchor the rep will see.
+
+verdict:
+- "supported": the source text states the claim's main fact and its specifics (numbers, names, products, places, dates).
+- "partial": the source text supports the core fact, but some specifics in the claim do not appear in it.
+- "unsupported": the source text is about something else, or does not contain the core fact.
+
+trimmed_summary: for "partial" only, one sentence restating just what the source text states. Empty string for the other verdicts.
 
 {items}"""
 

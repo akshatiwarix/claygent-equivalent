@@ -1,8 +1,9 @@
 """Auto-repair: fix problems the checks find instead of only reporting them.
 
 1. Triggers whose link is really dead (404/410) are dropped.
-2. Triggers whose quote does not actually support the claim are dropped (one cheap model call).
-3. Pains and openers that rested on a dropped trigger are rewritten from the evidence that is left.
+2. Triggers whose source text does not support the claim are dropped; ones where it supports only part of
+   the claim are trimmed to what the source states (one cheap model call).
+3. Pains and openers that rested on a dropped or trimmed trigger are rewritten from the evidence left.
 4. Generic openers (stock phrases, or no specific fact) are rewritten with one extra model call.
 Every repair is best-effort: if a fix fails, the original stays and a confidence note says so.
 """
@@ -56,34 +57,45 @@ def drop_dead_links(brief: AccountBrief, domain: str) -> AccountBrief:
     return rebuild_triggers(brief, survivors, notes, domain)
 
 
-def drop_unsupported(client, brief: AccountBrief, domain: str) -> AccountBrief:
-    """A quote can be on the page and still not back the claim. Ask once, for all triggers."""
+def check_triggers(client, brief: AccountBrief, domain: str,
+                   excerpts: dict[str, str]) -> tuple[AccountBrief, set[int]]:
+    """A quote can be on the page and the summary still say more than the page does.
+    Unsupported triggers are dropped; partly supported ones are trimmed to what the source states.
+    Returns (brief, indexes of pains that rested on a trimmed trigger and need rewriting)."""
     if not brief.triggers:
-        return brief
+        return brief, set()
     notes = list(brief.confidence_notes)
     try:
-        verdict = llm.check_support(client, domain, brief)
+        verdict = llm.check_support(client, domain, brief, excerpts)
         if set(verdict) != set(range(len(brief.triggers))):
             raise ValueError("incomplete verdicts")
     except Exception as e:
         print(f"  support check failed for {domain}: {type(e).__name__}", file=sys.stderr)
         notes.append("Automatic check that each quote supports its claim was unavailable for this brief.")
-        return brief.model_copy(update={"confidence_notes": notes})
-    survivors = []
+        return brief.model_copy(update={"confidence_notes": notes}), set()
+    survivors, trimmed = [], set()
     for i, t in enumerate(brief.triggers):
-        if verdict[i]:
-            survivors.append((i, t))
+        kind, short = verdict[i]
+        if kind == "unsupported":
+            notes.append(f"Auto-fix: dropped trigger, its source text does not support the claim ({t.source_url}): {t.summary}")
+        elif kind == "partial" and short:
+            notes.append(f"Auto-fix: trimmed a summary to what its source states ({t.source_url}). Removed detail: {t.summary}")
+            survivors.append((i, t.model_copy(update={"summary": short})))
+            trimmed.add(i)
         else:
-            notes.append(f"Auto-fix: dropped trigger, its quote does not support the claim ({t.source_url}): {t.summary}")
+            survivors.append((i, t))
+    touched = {k for k, p in enumerate(brief.pains) if p.trigger_index in trimmed}
     if len(survivors) == len(brief.triggers):
-        return brief
-    return rebuild_triggers(brief, survivors, notes, domain)
+        return brief.model_copy(update={"triggers": [t for _, t in survivors], "confidence_notes": notes}), touched
+    return rebuild_triggers(brief, survivors, notes, domain), touched
 
 
-def fix_orphans(client, brief: AccountBrief, orig_idx: list[int], domain: str) -> AccountBrief:
-    """Rewrite pains (and their openers) whose trigger was dropped, so no opener states a claim
-    that failed verification."""
-    orphans = [i for i, p in enumerate(brief.pains) if orig_idx[i] >= 0 and p.trigger_index == -1]
+def fix_orphans(client, brief: AccountBrief, orig_idx: list[int], domain: str,
+                touched: set[int] = frozenset()) -> AccountBrief:
+    """Rewrite pains (and their openers) whose trigger was dropped or trimmed, so no opener states
+    a claim that failed verification."""
+    orphans = [i for i, p in enumerate(brief.pains)
+               if (orig_idx[i] >= 0 and p.trigger_index == -1) or i in touched]
     if not orphans:
         return brief
     company = brief.snapshot.company_name
@@ -112,7 +124,7 @@ def fix_orphans(client, brief: AccountBrief, orig_idx: list[int], domain: str) -
         print(f"  orphan repair failed for {domain}: {type(e).__name__}", file=sys.stderr)
     for i in orphans:
         if i not in fixed:
-            notes.append(f"Pain {i + 1} and its opener were based on an event that failed verification "
+            notes.append(f"Pain {i + 1} and its opener rest on a claim that failed verification "
                          "and could not be replaced automatically. Check them before sending.")
     return brief.model_copy(update={"pains": pains, "talk_tracks": tracks, "confidence_notes": notes})
 
@@ -140,9 +152,10 @@ def fix_openers(client, brief: AccountBrief, domain: str) -> AccountBrief:
     return brief.model_copy(update={"talk_tracks": tracks, "confidence_notes": notes})
 
 
-def repair_brief(client, brief: AccountBrief, domain: str, orig_idx: list[int]) -> AccountBrief:
+def repair_brief(client, brief: AccountBrief, domain: str, orig_idx: list[int],
+                 excerpts: dict[str, str]) -> AccountBrief:
     """orig_idx = each pain's trigger_index as the model wrote it, before any trigger was dropped."""
     brief = drop_dead_links(brief, domain)
-    brief = drop_unsupported(client, brief, domain)
-    brief = fix_orphans(client, brief, orig_idx, domain)
+    brief, touched = check_triggers(client, brief, domain, excerpts)
+    brief = fix_orphans(client, brief, orig_idx, domain, touched)
     return fix_openers(client, brief, domain)

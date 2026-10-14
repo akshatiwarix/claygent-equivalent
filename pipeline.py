@@ -47,7 +47,7 @@ def run_brief(client, domain: str, persona: str | None = None, offer: str | None
         emit("check", {})
         orig_idx = [p.trigger_index for p in brief.pains]  # before any trigger is dropped
         brief = apply_checks(brief, cited, domain)
-        brief = repair_brief(client, brief, domain, orig_idx)  # auto-fix what the checks find
+        brief = repair_brief(client, brief, domain, orig_idx, cited)  # auto-fix what the checks find
         return add_tiers({"domain": domain, "generated": date.today().isoformat(), "persona": persona,
                           "offer": offer, "brief": brief.model_dump(), "stats": stats()})
     except Exception as e:

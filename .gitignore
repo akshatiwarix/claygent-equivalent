@@ -4,3 +4,5 @@ briefs/
 __pycache__/
 *.pyc
 .gstack/
+.vercel
+.env*

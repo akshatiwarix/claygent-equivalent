@@ -1,0 +1,7 @@
+.venv
+briefs
+evals
+design
+__pycache__
+*.pyc
+.env
