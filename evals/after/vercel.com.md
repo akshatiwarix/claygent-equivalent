@@ -1,0 +1,36 @@
+# Vercel (vercel.com): Account Brief
+_Generated 2026-10-14_
+
+## Snapshot
+- **What they sell:** An AI Cloud and developer platform for building and deploying web and AI applications and agents; behind v0, Next.js, and the AI SDK. At Ship 2026 it described itself as an agentic infrastructure platform.
+- **To whom:** Developers and engineering teams building web and AI apps and agents. Vercel's own Series F post says Teams and Enterprise accounts are more than 50% of v0 revenue. Named customers include DoorDash, Helly Hansen, OpenAI, Stripe, and The Weather Company.
+- **Size / stage:** Late stage. Last confirmed primary round is the $300M Series F at a $9.3B post-money valuation (2025-09-30). Headcount is unverified: third-party estimates conflict (Crustdata 1,022 as of September 2026; Revelio about 885 as of March 2026).
+
+## Recent triggers (last 90 days)
+1. **Launch** (2026-08-25): Vercel Connect reached general availability, replacing stored provider secrets with short-lived, scoped tokens for agents, with 100+ connectors (including Salesforce and Slack), RBAC, and audit logs. [source: first-party](https://vercel.com/changelog/vercel-connect-ga)
+   > "Vercel Connect is now generally available on all plans and in v0."
+2. **Hiring Trend** (2026-10-13): The source states Vercel has 65 open US roles on applinity as of October 13, 2026, out of 90 total postings, with 4 US postings first seen in the last 7 days, and says the counts come from Vercel's own careers site rather than an aggregator. [source: third-party](https://www.applinity.com/companies/vercel)
+   > "Vercel has 65 open US roles on applinity as of October 13, 2026"
+
+## Likely pains
+1. **Agents that act on Salesforce and Slack need governed, scoped credentials, and sales teams piloting AI outbound will need the same controls before connecting CRM data** (trigger 1). Vercel Connect GA on 2026-08-25 explicitly targets agents calling Salesforce and Slack with short-lived scoped tokens, audit logs, and RBAC, which bears directly on how an AI outbound tool would access CRM and messaging systems.
+2. **Vercel is hiring heavily in the US, so new reps will need to ramp fast, and manual prospecting will not keep up with that growth** (trigger 2). The trigger shows 65 open US roles on Vercel's own careers site as of October 13, 2026, which points to a fast-growing sales team. That AE hiring specifically, and the ramp and prospecting strain it creates, is an inference: the source does not say which roles are AE seats.
+3. **The CRO has publicly committed to an AI-forward go-to-market organization, so the sales leadership may already be looking for AI tooling to show results against that mandate**. Tied to the company snapshot rather than a dated trigger: the CRO's January 2026 post states the AI-forward GTM goal. This is outside the 90-day window and is not a new event.
+
+## Talk tracks
+- _Pain 1:_ "Saw Vercel Connect go GA Aug 25 with short-lived tokens for Salesforce and Slack agents. How are your outbound AI agents handling CRM credentials?"
+- _Pain 2:_ "Vercel's careers site lists 65 open US roles as of October 13, 2026."
+- _Pain 3:_ "Your CRO says you're building the most AI-forward go-to-market org in the industry. Where does AI outbound fit into the first 90 days?"
+
+## Confidence notes
+- Only two triggers met the rules. Pain 3 uses trigger_index -1 and is tied to the company snapshot (CRO's AI-forward GTM post, dated 2026-01-13, outside the window).
+- Excluded as not sales-relevant: Next.js 16.3 support (2026-08-04), Vercel Sandbox global availability (2026-08-24), and Run SDK (2026-08-25). These are infrastructure or developer launches with no clear link to a VP Sales's messaging.
+- Excluded because undated: Greenhouse job board snapshot (86 jobs, 13 AE roles) has no date and is secondary. Its quote is not dated, so it cannot be used as a dated trigger.
+- Excluded for no QUOTE line: Revelio's 182 active postings (up 10.4%), Crustdata's 35 open roles (down 10%), and the TechReport article dated 2026-07-23 on Vercel's GTM Engineering AI agents (secondary, underlying post not seen).
+- Excluded as unverified: the Series G claim ($300M, 2026-07-29, Accel-led). Captables marks it database-only with no issuer or named-investor corroboration. Named participants are also unconfirmed.
+- Funding: Series E ($250M, 2024-05-16, $3.25B valuation per Captables) is not confirmed against a company source. Total raised of $863M is third-party and Captables says it is not verified lifetime funding.
+- Headcount conflicts: Crustdata 1,022 (Sept 2026) vs Revelio approximately 885 (March 2026). Both are third-party estimates; the company's own figure was not found.
+- Leadership: no new VP-level or sales-leadership hire was found after 2026-07-16. The CRO appointment (Nick Bogaty, 2026-01-13) is outside the window.
+- Ship NYC and Ship 2026 events (2026-06-17, 2026-06-30) are outside the window and are not counted as triggers. v0 Mobile GA was planned for October but was not verified.
+- Search limit reached before checking vercel.com/press and vercel.com/careers. Rechecking those pages could confirm or rule out a current-quarter funding or leadership announcement.
+- Auto-fix: trimmed a summary to what its source states (https://www.applinity.com/companies/vercel). Removed detail: Applinity lists 90 total postings and 65 open US roles, including 12 Account Executive roles, with 4 US postings first seen in the last 7 days. Counts are from an aggregator and are directional.

@@ -57,12 +57,13 @@
   <div class="steps">
     <div><h3>Research</h3><p>A model searches the web, at most five times, and writes notes with a date, a link and an exact quote for every event.</p></div>
     <div><h3>Write</h3><p>A second call, with no web access, turns only those notes into three pains and three openers in a fixed format.</p></div>
-    <div><h3>Check</h3><p>Plain code, no model. Is each event from the last 90 days? Was its link returned by the search? Is the quote on the page? Failures are dropped and listed. Dead links and generic openers are fixed automatically.</p></div>
+    <div><h3>Check</h3><p>Is each event from the last 90 days? Was its link returned by the search? Is the quote on the page, and does the page text back up the claim? Events that fail are dropped, or trimmed to what the source says, and the pains built on them are rewritten. Dead links and generic openers are fixed automatically. Everything removed is listed.</p></div>
   </div>
-  <p class="results">Spot-checked by hand: 34 of 99 facts across 10 briefs, 0 wrong. Average cost $0.046 per brief, about a minute each. A small sample, not proof of zero errors.</p>
+  <p class="results">Spot-checked by hand on an earlier version: 34 of 99 facts across 10 briefs, 0 wrong. Saved examples cost $0.045 each on average and took about 75 seconds. A small sample, not proof of zero errors.</p>
 </section>
 
 <footer class="foot">
+  <p>Briefs are generated from public web sources and can contain errors. Check the linked sources before you send anything.</p>
   <p>Part of a GTM stack: briefs feed an enrichment pipeline and, next, a signal engine that watches for the events behind them.</p>
 </footer>
 
