@@ -23,8 +23,7 @@ Find:
 {_angle(persona, offer)}
 
 Source rules (a sales rep must be able to trust every link):
-- Prefer primary sources: the company's own site (blog, newsroom, press releases, changelog, careers page or its Greenhouse/Lever/Ashby job board). Next best: major press (e.g. TechCrunch, Reuters, Bloomberg, WSJ, The Information).
-- Avoid job aggregators, scraped company-data sites, and SEO blogs for triggers. Use them only for context, and say so.
+- Prefer primary sources: the company's own site (blog, newsroom, press releases, changelog, careers page), then its job board or press wire, then major press. Job boards, aggregators and data sites are acceptable when nothing better exists; the brief labels each source, so report them rather than skipping the event.
 - For each event, include a short VERBATIM quote (under 30 words) copied exactly, character for character, from the source text you were shown. Do not paraphrase inside the quote. If you cannot quote it, do not report it as an event.
 
 Output plain-text notes. Every fact MUST end with its date (YYYY-MM-DD if known) and its source URL in brackets, like [2026-09-01, https://example.com/post]. Put each event's quote on the line after it, as: QUOTE: "..."
@@ -38,7 +37,7 @@ Never invent facts, dates, or URLs. Today is {today}.
 
 Rules:
 - triggers: only events dated on or after {cutoff}. Each needs a date (YYYY-MM-DD), a source_url copied exactly from the notes, and an evidence_quote copied exactly from that event's QUOTE line in the notes. Do not edit or paraphrase the quote. Skip events that have no QUOTE.
-- Prefer triggers backed by the company's own site or major press over aggregator sites.
+- Include every verifiable trigger, including hiring trends from job boards. Prefer a company-owned source when two sources cover the same event.
 - pains: exactly 3. Each references one trigger by its index (0-based) in the triggers list.
 - talk_tracks: exactly 3, one per pain (pain_index is 0-based). Each is a cold-email opener under 25 words, specific to this company, no generic flattery.
 - confidence_notes: anything missing, undated, conflicting, or unverified.

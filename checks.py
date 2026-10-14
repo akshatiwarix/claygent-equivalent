@@ -11,14 +11,13 @@ from urllib.parse import urlparse
 
 from models import AccountBrief
 
-TIER_RANK = {"first-party": 0, "careers page": 1, "press": 2, "third-party": 3}
+TIER_RANK = {"first-party": 0, "second-party": 1, "third-party": 2}
 
 ATS_HOSTS = ("greenhouse.io", "lever.co", "ashbyhq.com", "workable.com", "smartrecruiters.com",
              "workdayjobs.com", "bamboohr.com", "recruitee.com")
-PRESS_HOSTS = ("techcrunch.com", "reuters.com", "bloomberg.com", "wsj.com", "ft.com",
-               "theinformation.com", "forbes.com", "cnbc.com", "businesswire.com",
-               "prnewswire.com", "globenewswire.com", "axios.com", "venturebeat.com",
-               "nytimes.com", "fortune.com", "businessinsider.com", "sec.gov")
+# Company-authored content hosted on someone else's platform. Press wires carry the company's
+# own releases; independent press (TechCrunch, Reuters...) is third-party.
+SECOND_PARTY_HOSTS = ("businesswire.com", "prnewswire.com", "globenewswire.com", "linkedin.com")
 
 
 def _norm_url(url: str) -> str:
@@ -43,10 +42,10 @@ def source_tier(url: str, company_domain: str) -> str:
         or (len(parts) >= 3 and parts[-3] == label and parts[-2] in ("co", "com", "org", "net")))
     if own:
         return "first-party"
-    if _host_is(host, ATS_HOSTS) and label in url.lower():
-        return "careers page"
-    if _host_is(host, PRESS_HOSTS):
-        return "press"
+    # A company's job board on an ATS, or its release on a wire / LinkedIn page.
+    if (_host_is(host, ATS_HOSTS) and label in url.lower()) or \
+            (_host_is(host, SECOND_PARTY_HOSTS) and label in url.lower()):
+        return "second-party"
     return "third-party"
 
 
