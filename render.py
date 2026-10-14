@@ -23,7 +23,8 @@ def render_markdown(brief: AccountBrief, domain: str, today: str) -> str:
 
     lines += ["", "## Likely pains"]
     for i, p in enumerate(brief.pains):
-        lines.append(f"{i + 1}. **{p.pain}** (trigger {p.trigger_index + 1}). {p.reasoning}")
+        ref = f" (trigger {p.trigger_index + 1})" if p.trigger_index < len(brief.triggers) else ""
+        lines.append(f"{i + 1}. **{p.pain}**{ref}. {p.reasoning}")
 
     lines += ["", "## Talk tracks"]
     for t in brief.talk_tracks:
