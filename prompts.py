@@ -64,3 +64,35 @@ Triggers:
 
 Openers to rewrite, with what was wrong:
 {flagged}"""
+
+
+def support_prompt(items: str) -> str:
+    return f"""For each numbered claim, decide whether the quote directly supports the claim's main fact.
+Answer supported=false if the quote is about a different topic, only loosely related, or does not contain the key fact (a number, name, product, or event) the claim states.
+Be strict: a sales rep will repeat the claim to the prospect.
+
+{items}"""
+
+
+def orphan_prompt(company: str, snapshot: str, triggers: str, kept: str, orphans: str) -> str:
+    return f"""Some likely pains for {company} lost their supporting evidence when their trigger failed verification.
+Write a replacement for each pain listed under "Pains to replace". Use ONLY the verified triggers and snapshot below. Do not invent facts.
+
+For each replacement:
+- pain_index: the same index as the pain it replaces.
+- trigger_index: the index of the one verified trigger that supports it, or -1 if none fits (then it must rest on the snapshot).
+- reasoning: one or two sentences tying the pain to that evidence. Say plainly if the link is an inference.
+- opener: a cold-email opener under 25 words that names one specific fact from that trigger or the snapshot. No stock phrases ("hope this finds you", "quick question", "I noticed").
+- The replacement must be different in topic from the pains that are kept.
+
+Snapshot:
+{snapshot}
+
+Verified triggers:
+{triggers}
+
+Pains that are kept:
+{kept}
+
+Pains to replace:
+{orphans}"""

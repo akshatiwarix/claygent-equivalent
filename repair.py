@@ -1,8 +1,10 @@
 """Auto-repair: fix problems the checks find instead of only reporting them.
 
 1. Triggers whose link is really dead (404/410) are dropped.
-2. Generic openers (stock phrases, or no specific fact) are rewritten with one extra model call.
-   If the rewrite is still flagged or invalid, the original stays and a confidence note says so.
+2. Triggers whose quote does not actually support the claim are dropped (one cheap model call).
+3. Pains and openers that rested on a dropped trigger are rewritten from the evidence that is left.
+4. Generic openers (stock phrases, or no specific fact) are rewritten with one extra model call.
+Every repair is best-effort: if a fix fails, the original stays and a confidence note says so.
 """
 import re
 import sys
@@ -10,8 +12,10 @@ import sys
 import httpx
 
 import llm
+from pydantic import ValidationError
+
 from checks import rebuild_triggers
-from models import AccountBrief
+from models import AccountBrief, Pain, TalkTrack
 
 STOCK = ("hope this finds you", "quick question", "i noticed", "i came across", "reaching out",
          "i wanted to", "touching base", "congrats on", "congratulations on")
@@ -52,6 +56,67 @@ def drop_dead_links(brief: AccountBrief, domain: str) -> AccountBrief:
     return rebuild_triggers(brief, survivors, notes, domain)
 
 
+def drop_unsupported(client, brief: AccountBrief, domain: str) -> AccountBrief:
+    """A quote can be on the page and still not back the claim. Ask once, for all triggers."""
+    if not brief.triggers:
+        return brief
+    notes = list(brief.confidence_notes)
+    try:
+        verdict = llm.check_support(client, domain, brief)
+        if set(verdict) != set(range(len(brief.triggers))):
+            raise ValueError("incomplete verdicts")
+    except Exception as e:
+        print(f"  support check failed for {domain}: {type(e).__name__}", file=sys.stderr)
+        notes.append("Automatic check that each quote supports its claim was unavailable for this brief.")
+        return brief.model_copy(update={"confidence_notes": notes})
+    survivors = []
+    for i, t in enumerate(brief.triggers):
+        if verdict[i]:
+            survivors.append((i, t))
+        else:
+            notes.append(f"Auto-fix: dropped trigger, its quote does not support the claim ({t.source_url}): {t.summary}")
+    if len(survivors) == len(brief.triggers):
+        return brief
+    return rebuild_triggers(brief, survivors, notes, domain)
+
+
+def fix_orphans(client, brief: AccountBrief, orig_idx: list[int], domain: str) -> AccountBrief:
+    """Rewrite pains (and their openers) whose trigger was dropped, so no opener states a claim
+    that failed verification."""
+    orphans = [i for i, p in enumerate(brief.pains) if orig_idx[i] >= 0 and p.trigger_index == -1]
+    if not orphans:
+        return brief
+    company = brief.snapshot.company_name
+    pains, tracks, notes = list(brief.pains), list(brief.talk_tracks), list(brief.confidence_notes)
+    fixed: set[int] = set()
+    try:
+        for r in llm.rewrite_orphans(client, domain, brief, orphans):
+            i = r.pain_index
+            if i not in orphans or i in fixed or not -1 <= r.trigger_index < len(brief.triggers):
+                continue
+            try:
+                new_pain = Pain(pain=r.pain, trigger_index=r.trigger_index, reasoning=r.reasoning)
+                new_track = TalkTrack(pain_index=i, opener=r.opener)  # enforces under 25 words
+            except ValidationError:
+                continue
+            if opener_flags(new_track.opener, company):
+                continue
+            old = pains[i].pain
+            notes = [n for n in notes if not n.startswith(f"Pain '{old}' was tied")]
+            pains[i] = new_pain
+            tracks = [new_track if t.pain_index == i else t for t in tracks]
+            fixed.add(i)
+            if new_pain.trigger_index == -1:
+                notes.append(f"Pain {i + 1} rests on the company snapshot, not a recent event.")
+    except Exception as e:
+        print(f"  orphan repair failed for {domain}: {type(e).__name__}", file=sys.stderr)
+    for i in orphans:
+        if i not in fixed:
+            notes.append(f"Pain {i + 1} and its opener were based on an event that failed verification "
+                         "and could not be replaced automatically. Check them before sending.")
+    return brief.model_copy(update={"pains": pains, "talk_tracks": tracks, "confidence_notes": notes})
+
+
 def fix_openers(client, brief: AccountBrief, domain: str) -> AccountBrief:
     company = brief.snapshot.company_name
     flagged = {i: f for i, t in enumerate(brief.talk_tracks) if (f := opener_flags(t.opener, company))}
@@ -75,5 +140,9 @@ def fix_openers(client, brief: AccountBrief, domain: str) -> AccountBrief:
     return brief.model_copy(update={"talk_tracks": tracks, "confidence_notes": notes})
 
 
-def repair_brief(client, brief: AccountBrief, domain: str) -> AccountBrief:
-    return fix_openers(client, drop_dead_links(brief, domain), domain)
+def repair_brief(client, brief: AccountBrief, domain: str, orig_idx: list[int]) -> AccountBrief:
+    """orig_idx = each pain's trigger_index as the model wrote it, before any trigger was dropped."""
+    brief = drop_dead_links(brief, domain)
+    brief = drop_unsupported(client, brief, domain)
+    brief = fix_orphans(client, brief, orig_idx, domain)
+    return fix_openers(client, brief, domain)

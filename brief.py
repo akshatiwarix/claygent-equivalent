@@ -23,7 +23,8 @@ def build_brief(client, domain: str, persona: str | None, offer: str | None) -> 
     Raises on any failure; the caller decides whether that stops the run.
     """
     result = run_brief(client, domain, persona, offer)
-    brief = AccountBrief.model_validate(result["brief"])
+    data = result["brief"]  # triggers also carry a display-only "tier" the strict model rejects
+    brief = AccountBrief.model_validate({**data, "triggers": [{k: v for k, v in t.items() if k != "tier"} for t in data["triggers"]]})
     out = Path("briefs")
     out.mkdir(exist_ok=True)
     (out / f"{domain}.md").write_text(render_markdown(brief, domain, result["generated"]))

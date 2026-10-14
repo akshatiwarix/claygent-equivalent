@@ -10,8 +10,9 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from models import AccountBrief, TalkTrack, brief_json_schema
-from prompts import research_prompt, rewrite_openers_prompt, synthesis_prompt
+from models import AccountBrief, Pain, TalkTrack, brief_json_schema
+from prompts import (orphan_prompt, research_prompt, rewrite_openers_prompt, support_prompt,
+                     synthesis_prompt)
 
 load_dotenv()
 
@@ -158,3 +159,62 @@ def rewrite_openers(client: OpenAI, domain: str, brief: AccountBrief,
     )
     log_usage("repair", domain, _usage_dict(resp))
     return _Rewrites.model_validate_json(resp.choices[0].message.content or "").talk_tracks
+
+
+class _Verdict(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    index: int
+    supported: bool
+
+
+class _Verdicts(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    verdicts: list[_Verdict]
+
+
+def _strict_call(client: OpenAI, domain: str, step: str, prompt: str, model_cls):
+    resp = client.chat.completions.create(
+        model=get_model(),
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_schema", "json_schema": {
+            "name": step, "strict": True, "schema": model_cls.model_json_schema()}},
+        extra_body={"provider": {"require_parameters": True}},
+    )
+    log_usage(step, domain, _usage_dict(resp))
+    return model_cls.model_validate_json(resp.choices[0].message.content or "")
+
+
+def check_support(client: OpenAI, domain: str, brief: AccountBrief) -> dict[int, bool]:
+    """Does each trigger's quote actually support its summary? One call for all triggers."""
+    items = "\n".join(f'{i}. Claim: {t.summary}\n   Quote: "{t.evidence_quote}"'
+                      for i, t in enumerate(brief.triggers))
+    out = _strict_call(client, domain, "support", support_prompt(items), _Verdicts)
+    return {v.index: v.supported for v in out.verdicts}
+
+
+class _Replacement(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    pain_index: int
+    trigger_index: int
+    reasoning: str
+    pain: str
+    opener: str
+
+
+class _Replacements(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    replacements: list[_Replacement]
+
+
+def rewrite_orphans(client: OpenAI, domain: str, brief: AccountBrief,
+                    orphan_idx: list[int]) -> list[_Replacement]:
+    """Rewrite pains (and their openers) whose trigger failed verification."""
+    s = brief.snapshot
+    snapshot = f"Sells: {s.what_they_sell}\nSells to: {s.who_they_sell_to}\nStage: {s.size_and_stage}"
+    triggers = "\n".join(f'{i}. {t.date} {t.summary} (quote: "{t.evidence_quote}")'
+                         for i, t in enumerate(brief.triggers)) or "(none)"
+    kept = "\n".join(f"{i}: {p.pain}" for i, p in enumerate(brief.pains) if i not in orphan_idx) or "(none)"
+    old = "\n".join(f"{i}: {brief.pains[i].pain}" for i in orphan_idx)
+    return _strict_call(client, domain, "orphans",
+                        orphan_prompt(s.company_name, snapshot, triggers, kept, old),
+                        _Replacements).replacements
