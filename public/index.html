@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account Brief: research a company, get a cold email you can defend</title>
+<meta name="description" content="Enter a company domain and get a one-page account brief: what they sell, what changed in the last 90 days, and three cold-email openers. Every fact links to its source and shows the sentence behind it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <a class="brand" href="/">
+    <span class="mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    Account Brief
+  </a>
+  <nav>
+    <a href="#how">How it works</a>
+    <a href="#brief">Example brief</a>
+    <a href="https://github.com/akshatiwarix/claygent-equivalent">Source code</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Know why you're emailing before you write the email.</h1>
+  <p class="lede">Enter a company domain. In about a minute you get a one-page brief: what they sell, what changed in the last 90 days, and three cold-email openers. Every fact links to its source and shows the sentence that backs it up.</p>
+
+  <form id="run-form" class="run" novalidate>
+    <div class="field grow2">
+      <label for="domain">Company domain</label>
+      <input id="domain" name="domain" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="notion.so" class="strong">
+    </div>
+    <div class="field grow1">
+      <label for="persona">Who you sell to <span class="opt">(optional)</span></label>
+      <input id="persona" name="persona" type="text" maxlength="80" placeholder="VP Sales">
+    </div>
+    <div class="field grow1">
+      <label for="offer">What you sell <span class="opt">(optional)</span></label>
+      <input id="offer" name="offer" type="text" maxlength="80" placeholder="AI outbound tooling">
+    </div>
+    <button id="run-btn" type="submit">Run brief</button>
+  </form>
+  <p class="hint">One live run per visitor per day. Or open a saved example:</p>
+  <div id="examples" class="chips" aria-label="Saved examples"></div>
+</section>
+
+<div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+<section id="brief" class="brief" hidden></section>
+
+<section id="how" class="pipeline">
+  <h2>Two model calls, then a check</h2>
+  <div class="steps">
+    <div><h3>Research</h3><p>A model searches the web, at most five times, and writes notes with a date, a link and an exact quote for every event.</p></div>
+    <div><h3>Write</h3><p>A second call, with no web access, turns only those notes into three pains and three openers in a fixed format.</p></div>
+    <div><h3>Check</h3><p>Plain code, no model. Is each event from the last 90 days? Was its link returned by the search? Is the quote on the page? Failures are dropped and listed. Dead links and generic openers are fixed automatically.</p></div>
+  </div>
+  <p class="results">Spot-checked by hand: 34 of 99 facts across 10 briefs, 0 wrong. Average cost $0.046 per brief, about a minute each. A small sample, not proof of zero errors.</p>
+</section>
+
+<footer class="foot">
+  <p>Part of a GTM stack: briefs feed an enrichment pipeline and, next, a signal engine that watches for the events behind them.</p>
+</footer>
+
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -3,3 +3,4 @@ briefs/
 .venv/
 __pycache__/
 *.pyc
+.gstack/

@@ -37,8 +37,9 @@ Never invent facts, dates, or URLs. Today is {today}.
 
 Rules:
 - triggers: only events dated on or after {cutoff}. Each needs a date (YYYY-MM-DD), a source_url copied exactly from the notes, and an evidence_quote copied exactly from that event's QUOTE line in the notes. Do not edit or paraphrase the quote. Skip events that have no QUOTE.
-- Include every verifiable trigger, including hiring trends from job boards. Prefer a company-owned source when two sources cover the same event.
-- pains: exactly 3. Each references one trigger by its index (0-based) in the triggers list, or -1 if there are no triggers (then say so in confidence_notes).
+- Include every verifiable and relevant trigger, including hiring trends from job boards. Prefer a company-owned source when two sources cover the same event.
+- Relevance: keep a trigger only if it could change what a seller says to this company. If your own summary of an event would say "not sales", "indirect", or "low relevance", leave it out of triggers and explain it in confidence_notes instead.
+- pains: exactly 3. Each references one trigger by its index (0-based) in the triggers list. A pain must follow directly from its trigger: do not use a trigger whose link to the pain you would call indirect. If fewer than 3 strong triggers exist, tie the extra pains to the company snapshot instead and use -1 (say so in confidence_notes).
 - talk_tracks: exactly 3, one per pain (pain_index is 0-based). Each is a cold-email opener under 25 words, specific to this company, no generic flattery.
 - confidence_notes: anything missing, undated, conflicting, or unverified.
 {_angle(persona, offer)}

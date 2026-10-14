@@ -19,7 +19,7 @@ from pydantic import BaseModel
 import limits
 import llm
 from checks import source_tier
-from pipeline import clean_domain, run_brief
+from pipeline import add_tiers, clean_domain, run_brief
 
 app = FastAPI(title="Account Brief")
 EXAMPLES = Path(__file__).parent / "data" / "examples"
@@ -63,7 +63,7 @@ def get_example(domain: str):
     path = EXAMPLES / f"{domain}.json"
     if not path.exists():
         raise HTTPException(404, "No saved example for that domain")
-    return json.loads(path.read_text())
+    return add_tiers(json.loads(path.read_text()))
 
 
 def friendly(e: BaseException) -> str:

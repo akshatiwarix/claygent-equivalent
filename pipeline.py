@@ -10,10 +10,17 @@ from typing import Callable
 from urllib.parse import urlparse
 
 import llm
-from checks import apply_checks
+from checks import apply_checks, source_tier
 from repair import repair_brief
 
 Stage = Callable[[str, dict], None]
+
+
+def add_tiers(result: dict) -> dict:
+    """Label each trigger first-/second-/third-party from its URL (idempotent)."""
+    for t in result["brief"]["triggers"]:
+        t["tier"] = source_tier(t["source_url"], result["domain"])
+    return result
 
 
 def run_brief(client, domain: str, persona: str | None = None, offer: str | None = None,
@@ -40,8 +47,8 @@ def run_brief(client, domain: str, persona: str | None = None, offer: str | None
         emit("check", {})
         brief = apply_checks(brief, cited, domain)
         brief = repair_brief(client, brief, domain)  # auto-fix dead links and generic openers
-        return {"domain": domain, "generated": date.today().isoformat(), "persona": persona,
-                "offer": offer, "brief": brief.model_dump(), "stats": stats()}
+        return add_tiers({"domain": domain, "generated": date.today().isoformat(), "persona": persona,
+                          "offer": offer, "brief": brief.model_dump(), "stats": stats()})
     except Exception as e:
         e.run_stats = stats()
         raise
