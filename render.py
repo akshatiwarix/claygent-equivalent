@@ -1,4 +1,5 @@
 """Turn a validated AccountBrief into a one-page Markdown file."""
+from checks import source_tier
 from models import AccountBrief
 
 
@@ -17,7 +18,9 @@ def render_markdown(brief: AccountBrief, domain: str, today: str) -> str:
     ]
     if brief.triggers:
         for i, t in enumerate(brief.triggers):
-            lines.append(f"{i + 1}. **{t.type.replace('_', ' ').title()}** ({t.date}): {t.summary} [source]({t.source_url})")
+            tier = source_tier(t.source_url, domain)
+            lines.append(f"{i + 1}. **{t.type.replace('_', ' ').title()}** ({t.date}): {t.summary} [source: {tier}]({t.source_url})")
+            lines.append(f"   > \"{t.evidence_quote}\"")
     else:
         lines.append("_No verified triggers found._")
 

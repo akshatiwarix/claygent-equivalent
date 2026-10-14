@@ -28,6 +28,7 @@ class Trigger(_Strict):
     summary: str
     date: str  # YYYY-MM-DD
     source_url: str
+    evidence_quote: str  # verbatim excerpt from the source; checks.py verifies it
 
     @field_validator("date")
     @classmethod

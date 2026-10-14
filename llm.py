@@ -7,6 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from pydantic import ValidationError
 
 from models import AccountBrief, brief_json_schema
 from prompts import research_prompt, synthesis_prompt
@@ -59,8 +60,8 @@ def search_count(usage: dict) -> int:
 
 
 def research_call(client: OpenAI, domain: str, persona: str | None = None,
-                  offer: str | None = None) -> tuple[str, set[str], dict]:
-    """Step 1. Returns (research notes, set of URLs the search tool actually returned, usage)."""
+                  offer: str | None = None) -> tuple[str, dict[str, str], dict]:
+    """Step 1. Returns (research notes, {url: search excerpt text}, usage)."""
     today = date.today()
     prompt = research_prompt(domain, today.isoformat(),
                              (today - timedelta(days=90)).isoformat(), persona, offer)
@@ -73,13 +74,14 @@ def research_call(client: OpenAI, domain: str, persona: str | None = None,
     msg = resp.choices[0].message
     notes = msg.content or ""
     # url_citation annotations are OpenRouter's record of pages the search really returned.
-    cited = set()
+    cited: dict[str, str] = {}
     # The SDK exposes annotations as a typed attribute, not in model_extra.
     for ann in getattr(msg, "annotations", None) or []:
         ann = ann if isinstance(ann, dict) else ann.model_dump()
-        url = (ann.get("url_citation") or {}).get("url")
-        if url:
-            cited.add(url)
+        uc = ann.get("url_citation") or {}
+        if uc.get("url"):
+            # Several annotations can share a URL; keep all of their excerpt text.
+            cited[uc["url"]] = cited.get(uc["url"], "") + "\n" + (uc.get("content") or "")
     usage = _usage_dict(resp)
     log_usage("research", domain, usage)
     return notes, cited, usage
@@ -91,17 +93,30 @@ def synthesis_call(client: OpenAI, domain: str, notes: str, persona: str | None 
     today = date.today()
     prompt = synthesis_prompt(notes, today.isoformat(),
                               (today - timedelta(days=90)).isoformat(), persona, offer)
-    resp = client.chat.completions.create(
-        model=get_model(),
-        messages=[{"role": "user", "content": prompt}],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {"name": "account_brief", "strict": True, "schema": brief_json_schema()},
-        },
-        # Only route to providers that really support response_format.
-        extra_body={"provider": {"require_parameters": True}},
-    )
-    usage = _usage_dict(resp)
-    log_usage("synthesis", domain, usage)
-    brief = AccountBrief.model_validate_json(resp.choices[0].message.content or "")
-    return brief, usage
+    messages = [{"role": "user", "content": prompt}]
+    total: dict = {}
+    for attempt in (1, 2):
+        resp = client.chat.completions.create(
+            model=get_model(),
+            messages=messages,
+            response_format={
+                "type": "json_schema",
+                "json_schema": {"name": "account_brief", "strict": True, "schema": brief_json_schema()},
+            },
+            # Only route to providers that really support response_format.
+            extra_body={"provider": {"require_parameters": True}},
+        )
+        usage = _usage_dict(resp)
+        log_usage("synthesis" if attempt == 1 else "synthesis_retry", domain, usage)
+        for k in ("prompt_tokens", "completion_tokens", "total_tokens", "cost"):
+            total[k] = total.get(k, 0) + (usage.get(k) or 0)
+        content = resp.choices[0].message.content or ""
+        try:
+            return AccountBrief.model_validate_json(content), total
+        except ValidationError as e:
+            if attempt == 2:
+                raise
+            # Strict schema can't enforce word counts etc., so show the model what failed.
+            problems = "; ".join(f"{'.'.join(map(str, err['loc']))}: {err['msg']}" for err in e.errors())
+            messages += [{"role": "assistant", "content": content},
+                         {"role": "user", "content": f"That failed validation: {problems}. Return the corrected JSON."}]

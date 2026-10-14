@@ -18,7 +18,7 @@ def build_brief(client, domain: str, persona: str | None, offer: str | None) -> 
     if not notes.strip():
         raise RuntimeError("research call returned no notes")
     brief, _ = synthesis_call(client, domain, notes, persona, offer)
-    brief = apply_checks(brief, cited)
+    brief = apply_checks(brief, cited, domain)
     out = Path("briefs") / f"{domain}.md"
     out.parent.mkdir(exist_ok=True)
     out.write_text(render_markdown(brief, domain, date.today().isoformat()))
