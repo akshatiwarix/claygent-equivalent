@@ -8,11 +8,10 @@ import csv
 import json
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
 
 import llm
 from models import AccountBrief
-from pipeline import run_brief
+from pipeline import clean_domain, run_brief
 from render import render_markdown
 
 SUMMARY_FIELDS = ["domain", "status", "top_trigger", "tokens", "searches", "cost_usd", "seconds"]
@@ -31,13 +30,6 @@ def build_brief(client, domain: str, persona: str | None, offer: str | None) -> 
     (out / f"{domain}.json").write_text(json.dumps(result, indent=2))
     print(f"wrote {out / domain}.md", file=sys.stderr)
     return result
-
-
-def clean_domain(raw: str) -> str:
-    """'https://www.Notion.so/pricing ' -> 'notion.so'"""
-    raw = raw.strip().lower()
-    host = urlparse(raw if "://" in raw else "//" + raw).hostname or ""
-    return host.removeprefix("www.")
 
 
 def read_domains(path: str) -> list[str]:

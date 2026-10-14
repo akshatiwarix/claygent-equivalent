@@ -7,6 +7,7 @@ import time
 import uuid
 from datetime import date
 from typing import Callable
+from urllib.parse import urlparse
 
 import llm
 from checks import apply_checks
@@ -46,3 +47,10 @@ def run_brief(client, domain: str, persona: str | None = None, offer: str | None
         raise
     finally:
         llm.RUN_KEY.reset(token)
+
+
+def clean_domain(raw: str) -> str:
+    """'https://www.Notion.so/pricing ' -> 'notion.so'"""
+    raw = raw.strip().lower()
+    host = urlparse(raw if "://" in raw else "//" + raw).hostname or ""
+    return host.removeprefix("www.")
