@@ -45,3 +45,21 @@ Rules:
 
 Research notes:
 {notes}"""
+
+
+def rewrite_openers_prompt(company: str, pains: str, triggers: str, flagged: str) -> str:
+    return f"""These cold-email openers for {company} failed a quality check. Rewrite only the ones listed.
+
+Rules for each rewrite:
+- Under 25 words, and it must keep the same pain_index.
+- Name one specific fact from the triggers below (a product, version, number, or named person). Do not invent facts.
+- No stock phrases ("hope this finds you", "quick question", "I noticed", "congrats on").
+
+Pains:
+{pains}
+
+Triggers:
+{triggers}
+
+Openers to rewrite, with what was wrong:
+{flagged}"""

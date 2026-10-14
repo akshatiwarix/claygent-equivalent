@@ -82,7 +82,12 @@ def apply_checks(brief: AccountBrief, excerpts: dict[str, str], domain: str) -> 
             notes.append(f"Dropped trigger, quote not found in source text ({t.source_url}): {t.summary}")
         else:
             survivors.append((i, t))
-    survivors.sort(key=lambda it: TIER_RANK[source_tier(it[1].source_url, domain)])  # stable
+    return rebuild_triggers(brief, survivors, notes, domain)
+
+
+def rebuild_triggers(brief: AccountBrief, survivors: list, notes: list[str], domain: str) -> AccountBrief:
+    """survivors = (old_index, trigger) pairs. Sort by source tier and re-point pains."""
+    survivors = sorted(survivors, key=lambda it: TIER_RANK[source_tier(it[1].source_url, domain)])  # stable
     old_to_new = {old: new for new, (old, _) in enumerate(survivors)}
     for p in brief.pains:
         if p.trigger_index in old_to_new:

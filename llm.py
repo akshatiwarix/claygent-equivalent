@@ -7,10 +7,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
-from pydantic import ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError
 
-from models import AccountBrief, brief_json_schema
-from prompts import research_prompt, synthesis_prompt
+from models import AccountBrief, TalkTrack, brief_json_schema
+from prompts import research_prompt, rewrite_openers_prompt, synthesis_prompt
 
 load_dotenv()
 
@@ -128,3 +128,27 @@ def synthesis_call(client: OpenAI, domain: str, notes: str, persona: str | None 
             problems = "; ".join(f"{'.'.join(map(str, err['loc']))}: {err['msg']}" for err in e.errors())
             messages += [{"role": "assistant", "content": content},
                          {"role": "user", "content": f"That failed validation: {problems}. Return the corrected JSON."}]
+
+
+class _Rewrites(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    talk_tracks: list[TalkTrack]
+
+
+def rewrite_openers(client: OpenAI, domain: str, brief: AccountBrief,
+                    flagged: dict[int, list[str]]) -> list[TalkTrack]:
+    """Auto-fix call: rewrite only the openers a quality check flagged. One attempt; may raise."""
+    pains = "\n".join(f"{i}: {p.pain}" for i, p in enumerate(brief.pains))
+    triggers = "\n".join(f"- {t.date} {t.summary} (quote: {t.evidence_quote})" for t in brief.triggers)
+    bad = "\n".join(f'pain_index {i}: "{brief.talk_tracks[i].opener}" <- {"; ".join(f)}'
+                    for i, f in flagged.items())
+    resp = client.chat.completions.create(
+        model=get_model(),
+        messages=[{"role": "user", "content": rewrite_openers_prompt(
+            brief.snapshot.company_name, pains, triggers or "(none)", bad)}],
+        response_format={"type": "json_schema", "json_schema": {
+            "name": "rewrites", "strict": True, "schema": _Rewrites.model_json_schema()}},
+        extra_body={"provider": {"require_parameters": True}},
+    )
+    log_usage("repair", domain, _usage_dict(resp))
+    return _Rewrites.model_validate_json(resp.choices[0].message.content or "").talk_tracks

@@ -18,11 +18,10 @@ from pathlib import Path
 import httpx
 
 from checks import quote_in_source
+from repair import opener_flags
 
 UA = {"User-Agent": "Mozilla/5.0 (compatible; brief-eval/1.0)"}
 BLOCKED = {401, 403, 429, 999}  # site refuses bots; not proof the link is dead
-STOCK = ("hope this finds you", "quick question", "i noticed", "i came across", "reaching out",
-         "i wanted to", "touching base", "congrats on", "congratulations on")
 
 TRIGGER_RE = re.compile(r"^\d+\. \*\*(.+?)\*\* \((\d{4}-\d{2}-\d{2})\): (.*) \[source: (.+?)\]\((.+?)\)$")
 QUOTE_RE = re.compile(r'^\s+> "(.*)"$')
@@ -67,21 +66,6 @@ def check_link(t: dict) -> dict:
     return {"link": "ok", "detail": str(r.status_code),
             "quote_on_page": quote_in_source(t["quote"], text),
             "date_on_page": any(v.lower() in text.lower() for v in date_variants(t["date"]))}
-
-
-def opener_flags(opener: str, company: str) -> list[str]:
-    """Pre-screen only. Specific = names a number/version or a mid-sentence proper noun
-    beyond the company name."""
-    flags = [f"stock phrase '{p}'" for p in STOCK if p in opener.lower()]
-    words = opener.split()
-    company_words = {w.lower() for w in company.split()}
-    specific = any(
-        re.sub(r"\W", "", w).lower() not in company_words and
-        (any(c.isdigit() for c in w) or (i > 0 and w[:1].isupper() and not words[i - 1].endswith((".", "?", "!"))))
-        for i, w in enumerate(words))
-    if not specific:
-        flags.append("names no specific fact (no number or proper noun)")
-    return flags
 
 
 def cmd_check(folder: Path) -> None:

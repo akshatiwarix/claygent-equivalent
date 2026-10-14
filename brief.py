@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 import llm
 from checks import apply_checks
 from render import render_markdown
+from repair import repair_brief
 
 SUMMARY_FIELDS = ["domain", "status", "top_trigger", "tokens", "searches", "cost_usd", "seconds"]
 
@@ -28,6 +29,7 @@ def build_brief(client, domain: str, persona: str | None, offer: str | None) -> 
         raise RuntimeError("research call returned no notes")
     brief, _ = llm.synthesis_call(client, domain, notes, persona, offer)
     brief = apply_checks(brief, cited, domain)
+    brief = repair_brief(client, brief, domain)  # auto-fix dead links and generic openers
     out = Path("briefs") / f"{domain}.md"
     out.parent.mkdir(exist_ok=True)
     out.write_text(render_markdown(brief, domain, date.today().isoformat()))
