@@ -2,7 +2,7 @@
 
 Reps spend 15 to 30 minutes researching each account, or skip the research and send the generic email. Account Brief takes a company domain and, in about a minute, returns a one-page brief: what they sell, what changed in the last 90 days, three likely pains, and three cold-email openers. Every fact links to its source and shows the sentence behind it.
 
-**Live demo:** [account-brief-three.vercel.app](https://account-brief-three.vercel.app)  ·  **Demo video:** [add GIF here]  ·  **Sample brief:** [examples/notion.so.md](examples/notion.so.md)
+**Live demo:** [account-brief-three.vercel.app](https://account-brief-three.vercel.app)  ·  **Sample brief:** [examples/notion.so.md](examples/notion.so.md)
 
 ## What a rep gets
 
