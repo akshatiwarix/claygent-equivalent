@@ -50,7 +50,12 @@ def _usage_dict(resp) -> dict:
 
 
 def search_count(usage: dict) -> int:
-    return (usage.get("server_tool_use") or {}).get("web_search_requests", 0)
+    # OpenRouter reports this under server_tool_use_details (older docs say server_tool_use).
+    for key in ("server_tool_use_details", "server_tool_use"):
+        n = (usage.get(key) or {}).get("web_search_requests")
+        if n is not None:
+            return n
+    return 0
 
 
 def research_call(client: OpenAI, domain: str, persona: str | None = None,
@@ -69,7 +74,9 @@ def research_call(client: OpenAI, domain: str, persona: str | None = None,
     notes = msg.content or ""
     # url_citation annotations are OpenRouter's record of pages the search really returned.
     cited = set()
-    for ann in (msg.model_extra or {}).get("annotations") or []:
+    # The SDK exposes annotations as a typed attribute, not in model_extra.
+    for ann in getattr(msg, "annotations", None) or []:
+        ann = ann if isinstance(ann, dict) else ann.model_dump()
         url = (ann.get("url_citation") or {}).get("url")
         if url:
             cited.add(url)
