@@ -6,6 +6,7 @@ Batch from CSV: python brief.py --csv accounts.csv   (column: domain)
 import argparse
 import csv
 import sys
+import time
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
@@ -14,7 +15,7 @@ import llm
 from checks import apply_checks
 from render import render_markdown
 
-SUMMARY_FIELDS = ["domain", "status", "top_trigger", "tokens", "searches", "cost_usd"]
+SUMMARY_FIELDS = ["domain", "status", "top_trigger", "tokens", "searches", "cost_usd", "seconds"]
 
 
 def build_brief(client, domain: str, persona: str | None, offer: str | None) -> str:
@@ -64,7 +65,7 @@ def run_batch(client, domains: list[str], persona: str | None, offer: str | None
         writer.writeheader()
         for i, domain in enumerate(domains, 1):
             print(f"[{i}/{len(domains)}] {domain}", file=sys.stderr)
-            top, status = "", "ok"
+            top, status, started = "", "ok", time.monotonic()
             try:
                 top = build_brief(client, domain, persona, offer)
                 if not top:
@@ -78,7 +79,8 @@ def run_batch(client, domains: list[str], persona: str | None, offer: str | None
             t = llm.TALLY.get(domain, {"tokens": 0, "searches": 0, "cost": 0.0})
             writer.writerow({"domain": domain, "status": status, "top_trigger": top,
                              "tokens": t["tokens"], "searches": t["searches"],
-                             "cost_usd": round(t["cost"], 4)})
+                             "cost_usd": round(t["cost"], 4),
+                             "seconds": round(time.monotonic() - started)})
             f.flush()  # keep progress if the run is killed
     total = sum(t["cost"] for t in llm.TALLY.values())
     print(f"done: {ok} ok, {failed} failed, total cost ${total:.4f}. Summary: {summary_path}",
