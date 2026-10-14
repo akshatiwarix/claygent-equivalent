@@ -16,6 +16,9 @@ load_dotenv()
 
 USAGE_LOG = Path("briefs/usage.log")
 
+# Running totals per domain, filled by log_usage so failed domains still report what they spent.
+TALLY: dict[str, dict] = {}
+
 WEB_SEARCH_TOOL = {
     "type": "openrouter:web_search",
     "parameters": {"engine": "exa", "max_results": 5, "max_uses": 5},
@@ -26,7 +29,8 @@ def get_client() -> OpenAI:
     key = os.getenv("OPENROUTER_API_KEY")
     if not key:
         sys.exit("OPENROUTER_API_KEY missing. Copy .env.example to .env and fill it in.")
-    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key)
+    # Timeout so one stuck request can't freeze an unattended batch.
+    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key, timeout=240, max_retries=2)
 
 
 def get_model() -> str:
@@ -38,6 +42,10 @@ def get_model() -> str:
 
 def log_usage(step: str, domain: str, usage: dict) -> None:
     """Print the usage object to stderr and append it to briefs/usage.log."""
+    t = TALLY.setdefault(domain, {"tokens": 0, "cost": 0.0, "searches": 0})
+    t["tokens"] += usage.get("total_tokens") or 0
+    t["cost"] += usage.get("cost") or 0
+    t["searches"] += search_count(usage)
     line = json.dumps({"domain": domain, "step": step, "usage": usage}, default=str)
     print(f"[usage] {line}", file=sys.stderr)
     USAGE_LOG.parent.mkdir(exist_ok=True)

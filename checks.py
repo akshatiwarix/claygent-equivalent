@@ -67,7 +67,7 @@ def apply_checks(brief: AccountBrief, excerpts: dict[str, str], domain: str) -> 
     """Drop failing triggers (noting each in confidence_notes), sort survivors by source tier.
 
     Pains point at triggers by index, so we re-point them after dropping and sorting.
-    A pain whose trigger was dropped loses its trigger link and is noted.
+    A pain whose trigger was dropped gets trigger_index -1 and is noted.
     """
     cutoff = date.today() - timedelta(days=90)
     by_url = {_norm_url(u): text for u, text in excerpts.items()}
@@ -87,7 +87,7 @@ def apply_checks(brief: AccountBrief, excerpts: dict[str, str], domain: str) -> 
     for p in brief.pains:
         if p.trigger_index in old_to_new:
             p.trigger_index = old_to_new[p.trigger_index]
-        else:
+        elif p.trigger_index != -1:
             notes.append(f"Pain '{p.pain}' was tied to a trigger that failed verification.")
-            p.trigger_index = len(survivors)  # out of range: renderer shows no trigger link
+            p.trigger_index = -1  # renderer shows no trigger link
     return brief.model_copy(update={"triggers": [t for _, t in survivors], "confidence_notes": notes})

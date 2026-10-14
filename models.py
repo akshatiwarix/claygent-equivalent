@@ -39,7 +39,7 @@ class Trigger(_Strict):
 
 class Pain(_Strict):
     pain: str
-    trigger_index: int  # position of the related trigger in AccountBrief.triggers
+    trigger_index: int  # position in AccountBrief.triggers, or -1 if there are no triggers
     reasoning: str
 
 
@@ -70,7 +70,7 @@ class AccountBrief(_Strict):
         if len(self.talk_tracks) != 3:
             raise ValueError(f"need exactly 3 talk tracks, got {len(self.talk_tracks)}")
         for p in self.pains:
-            if not 0 <= p.trigger_index < len(self.triggers):
+            if not -1 <= p.trigger_index < len(self.triggers):
                 raise ValueError(f"pain points at missing trigger {p.trigger_index}")
         for t in self.talk_tracks:
             if not 0 <= t.pain_index < len(self.pains):
